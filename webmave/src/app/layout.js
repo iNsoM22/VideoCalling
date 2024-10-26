@@ -1,4 +1,6 @@
 import "./globals.css";
+import { SocketProvider } from "@/provider/SocketProvider";
+import { UserProvider } from "@/provider/UserProvider";
 
 export const metadata = {
   title: "WebMAve",
@@ -8,7 +10,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <UserProvider>
+          <SocketProvider>{children}</SocketProvider>
+        </UserProvider>
+      </body>
     </html>
   );
 }

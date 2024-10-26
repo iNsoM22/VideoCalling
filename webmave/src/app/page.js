@@ -1,13 +1,10 @@
 import React from "react";
-import Login from "../components/landing.jsx";
 import { SocketProvider } from "@/provider/SocketProvider.jsx";
+import { UserProvider } from "@/provider/UserProvider.jsx";
+import SessionSetup from "./session/page.jsx";
 
 const home = () => {
-  return (
-    <SocketProvider>
-      <Login />;
-    </SocketProvider>
-  );
+  return <SessionSetup />;
 };
 
 export default home;

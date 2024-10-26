@@ -1,7 +1,12 @@
 "use client";
+
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Login() {
+export default function SessionSetup() {
+  const router = useRouter();
+  const { initializeUser } = useUser();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [meetingID, setMeetingID] = useState("");
@@ -16,6 +21,8 @@ export default function Login() {
       setErrorMessage("");
       // Handle login logic here
       console.log(`Joining ${meetingID} with:`, email, username);
+      initializeUser({ email, username, meetingID });
+      router.push(`/meeting/${meetingID}`);
     }
   };
 
@@ -43,11 +50,11 @@ export default function Login() {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-600 mb-2">
+            <label htmlFor="username" className="block text-gray-600 mb-2">
               Username
             </label>
             <input
-              type="username"
+              type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}

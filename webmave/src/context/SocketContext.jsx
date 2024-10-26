@@ -1,13 +1,13 @@
 import { io } from "socket.io-client";
 import React, { createContext, useState, useEffect } from "react";
-import { useUser } from "@/services/pyservice";
+import { useUser } from "./UserContext";
 
 export const SocketContext = createContext(null);
 
 export const SocketContextProvider = ({ children }) => {
   // This userUser would be a custom context that will be providing user details
   // or could be a function which interacts with the backend to get the user details.
-  const [user] = useUser();
+  const { user } = useUser();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState(null);
@@ -26,12 +26,13 @@ export const SocketContextProvider = ({ children }) => {
   }, [user]);
 
   useEffect(() => {
-    if (socket === null) return;
+    if (!socket) return;
+    const handleConnect = () => setIsConnected(true);
+    const handleDisconnect = () => setIsConnected(false);
+
     if (socket.connected) {
       handleConnect();
     }
-    const handleConnect = () => setIsConnected(true);
-    const handleDisconnect = () => setIsConnected(false);
 
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
@@ -45,7 +46,7 @@ export const SocketContextProvider = ({ children }) => {
   useEffect(() => {
     if (!socket || socket.connected) return;
 
-    socket.emit("addNewUser");
+    socket.emit("addNewUser", user);
     socket.on("getUsers", (response) => {
       setOnlineUsers(response);
     });
@@ -57,7 +58,11 @@ export const SocketContextProvider = ({ children }) => {
     };
   }, [socket, user, onlineUsers]);
 
-  return <SocketContext.Provider value={[]}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={[socket, isConnected, onlineUsers]}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
 export const useSocket = () => {
