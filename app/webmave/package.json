@@ -1,0 +1,26 @@
+{
+  "name": "webmave",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node src/server.js",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.0.1",
+    "react": "19.0.0-rc-69d4b800-20241021",
+    "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "socket.io": "^4.8.0",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "eslint": "^8",
+    "eslint-config-next": "15.0.1",
+    "nodemon": "^3.1.7",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
+  }
+}
