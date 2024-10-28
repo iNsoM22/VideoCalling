@@ -15,36 +15,34 @@ app.prepare().then(() => {
   const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
+    console.log("Client Connected....");
     // If a new User is added then it will notify the already connected users
     // Notification Logic would be implemented by the backend
     // Keep Track of previous users and current users.
-    const notifyUsers = socket.emit("getUsers", onlineUsers);
+    socket.emit("getUsers", onlineUsers);
 
     // Add User to the Socket Connection
     socket.on("addNewUser", (newUser) => {
       newUser &&
         !onlineUsers.some(
-          (connectedUser) => connectedUser.userID === newUser.id
+          (connectedUser) => connectedUser.userID === newUser.email
         ) &&
         onlineUsers.push({
-          userID: newUser.id,
+          userID: newUser.email,
           socketID: socket.id,
           profile: newUser,
         });
-      notifyUsers();
+      socket.emit("getUsers", onlineUsers);
     });
 
-    socket.disconnect("diconnect", () => {
-      onlineUsers = onlineUsers.filter(
-        (connectedUser) => connectedUser.socketID !== socket.id
-      );
-      notifyUsers();
+    socket.on("diconnect", () => {
+      onlineUsers = onlineUsers.filter((user) => user.socketID !== socket.id);
+      socket.emit("getUsers", onlineUsers);
     });
   });
 
   httpServer
     .once("error", (err) => {
-      ss;
       console.error(err);
       process.exit(1);
     })

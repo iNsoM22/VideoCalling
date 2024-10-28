@@ -1,21 +1,17 @@
 import { io } from "socket.io-client";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { useUser } from "./UserContext";
 
 export const SocketContext = createContext(null);
 
 export const SocketContextProvider = ({ children }) => {
-  // This userUser would be a custom context that will be providing user details
-  // or could be a function which interacts with the backend to get the user details.
   const { user } = useUser();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
-    // This line is preventing recursion
-    // Has to be resolved in later versions.
-    if (!user || socket) return;
+    if (!user) return;
 
     const newSocket = io();
     setSocket(newSocket);
@@ -27,8 +23,12 @@ export const SocketContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (!socket) return;
-    const handleConnect = () => setIsConnected(true);
-    const handleDisconnect = () => setIsConnected(false);
+    function handleConnect() {
+      setIsConnected(true);
+    }
+    function handleDisconnect() {
+      setIsConnected(false);
+    }
 
     if (socket.connected) {
       handleConnect();
@@ -47,26 +47,26 @@ export const SocketContextProvider = ({ children }) => {
     if (!socket || socket.connected) return;
 
     socket.emit("addNewUser", user);
-    socket.on("getUsers", (response) => {
+    function handleGetUsers(response) {
       setOnlineUsers(response);
-    });
+    }
+
+    socket.on("getUsers", handleGetUsers);
 
     return () => {
-      socket.off("getUsers", (response) => {
-        setOnlineUsers(response);
-      });
+      socket.off("getUsers", handleGetUsers);
     };
-  }, [socket, user, onlineUsers]);
+  }, [socket, user]);
 
   return (
-    <SocketContext.Provider value={[socket, isConnected, onlineUsers]}>
+    <SocketContext.Provider value={{ socket, isConnected, onlineUsers }}>
       {children}
     </SocketContext.Provider>
   );
 };
 
 export const useSocket = () => {
-  const context = userContext(SocketContext);
+  const context = useContext(SocketContext);
 
   if (context === null) {
     throw new Error("Socket Error: useSocket must be used within a provider");

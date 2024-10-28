@@ -3,11 +3,7 @@ import React, { createContext, useContext, useState } from "react";
 const UserContext = createContext(null);
 
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    meetingID: null,
-    username: null,
-    email: null,
-  });
+  const [user, setUser] = useState(null);
 
   const initializeUser = ({ meetingID, username, email }) => {
     setUser({
