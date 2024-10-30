@@ -1,5 +1,11 @@
 import { io } from "socket.io-client";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import { useUser } from "./UserContext";
 
 export const SocketContext = createContext(null);
@@ -9,6 +15,38 @@ export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [onGoingCall, setOnGoingCall] = useState([]);
+
+  const currentSocketUser = onlineUsers.find(
+    (onlineUser) => onlineUser.userID == user.email
+  );
+
+  const handleCall = useCallback(
+    (user) => {
+      if (!currentSocketUser | !socket) return null;
+      let participants = {
+        caller: currentSocketUser,
+        receiver: user,
+      };
+
+      setOnGoingCall({
+        participants,
+        isRinging: false,
+      });
+      socket.emit("call", participants);
+    },
+    [socket, currentSocketUser, onGoingCall]
+  );
+
+  const onIncomingCall = useCallback(
+    (participants) => {
+      setOnGoingCall({
+        participants,
+        isRinging: true,
+      });
+    },
+    [socket, user, onGoingCall]
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -18,6 +56,7 @@ export const SocketContextProvider = ({ children }) => {
 
     return () => {
       newSocket.disconnect();
+      setSocket(null);
     };
   }, [user]);
 
@@ -25,6 +64,9 @@ export const SocketContextProvider = ({ children }) => {
     if (!socket) return;
     function handleConnect() {
       setIsConnected(true);
+      if (user) {
+        socket.emit("addNewUser", user);
+      }
     }
     function handleDisconnect() {
       setIsConnected(false);
@@ -44,22 +86,31 @@ export const SocketContextProvider = ({ children }) => {
   }, [socket]);
 
   useEffect(() => {
-    if (!socket || socket.connected) return;
+    if (!socket || !socket.connected) return;
 
     socket.emit("addNewUser", user);
-    function handleGetUsers(response) {
-      setOnlineUsers(response);
-    }
 
-    socket.on("getUsers", handleGetUsers);
+    socket.on("getUsers", (response) => setOnlineUsers(response));
 
     return () => {
-      socket.off("getUsers", handleGetUsers);
+      socket.off("getUsers", (response) => setOnlineUsers(response));
     };
-  }, [socket, user]);
+  }, [socket, user, isConnected]);
+
+  // Calls Listener
+  useEffect(() => {
+    if (!socket) return;
+    if (!socket.connected) return;
+
+    socket.on("incomingCall", onIncomingCall);
+
+    return () => {
+      socket.off("incomingCall", onIncomingCall);
+    };
+  }, [socket, isConnected, user, onIncomingCall]);
 
   return (
-    <SocketContext.Provider value={{ socket, isConnected, onlineUsers }}>
+    <SocketContext.Provider value={{ onlineUsers, handleCall, onGoingCall }}>
       {children}
     </SocketContext.Provider>
   );
