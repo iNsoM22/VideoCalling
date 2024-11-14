@@ -2,6 +2,7 @@
 
 import IncomingCall from "@/components/IncomingCall";
 import CardCreator from "@/components/UserCards";
+import VideoCall from "@/components/VideoCall";
 import { useSocket } from "@/context/SocketContext";
 import { useUser } from "@/context/UserContext";
 import React from "react";
@@ -26,6 +27,8 @@ const Meeting = () => {
           handleCall={handleCall}
         />
       </div>
+
+      <VideoCall />
     </div>
   );
 };

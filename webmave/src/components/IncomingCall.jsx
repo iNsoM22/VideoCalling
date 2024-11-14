@@ -4,7 +4,7 @@ import { useSocket } from "@/context/SocketContext";
 import React from "react";
 
 const IncomingCall = () => {
-  const { onGoingCall } = useSocket();
+  const { onGoingCall, handleJoinCall } = useSocket();
 
   if (!onGoingCall || !onGoingCall.isRinging) return null;
 
@@ -24,8 +24,7 @@ const IncomingCall = () => {
         <div className="button-group flex justify-around mt-4">
           <button
             onClick={() => {
-              console.log("Call Accepted");
-              // Add your accept call logic here
+              handleJoinCall(onGoingCall);
             }}
             className="accept-call bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
           >
