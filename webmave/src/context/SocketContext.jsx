@@ -34,8 +34,6 @@ export const SocketContextProvider = ({ children }) => {
             "stun:stun.l.google.com:19302",
             "stun:stun1.l.google.com:19302",
             "stun:stun2.l.google.com:19302",
-            "stun:stun3.l.google.com:19302",
-            "stun:stun4.l.google.com:19302",
           ],
         },
       ];
@@ -45,18 +43,6 @@ export const SocketContextProvider = ({ children }) => {
         trickle: true,
         config: { iceServers },
       });
-      peer.on("stream", (stream) => {
-        setPeerData((prevPeer) => {
-          if (prevPeer) {
-            return { ...prevPeer, stream };
-          }
-          return prevPeer;
-        });
-      });
-      peer.on("error", console.error);
-
-      // Complete the EndCall function here.
-      peer.on("close", () => handleCallEnd());
       const rtcPeerConnection = peer._pc;
 
       rtcPeerConnection.oniceconnectionstatechange = async () => {
@@ -67,9 +53,10 @@ export const SocketContextProvider = ({ children }) => {
           handleCallEnd({});
         }
       };
+
       return peer;
     },
-    [currentlyGoingCall, setPeerData]
+    [onGoingCall, setPeerData]
   );
 
   const completePeerConnection = useCallback(
@@ -78,15 +65,16 @@ export const SocketContextProvider = ({ children }) => {
         console.log("ERROR: Missing the LocalStream!");
         return;
       }
-      if (peer) {
-        peer.peerConnection?.signal(connectionData.sdp);
+      if (peerData) {
+        peerData?.peerConnection?.signal(connectionData.sdp);
         return;
       }
       const newPeer = createPeer({ localStream, initiator: true });
 
       setPeerData({
         peerConnection: newPeer,
-        participantUser: connectionData.currentlyGoingCall.receiver.caller,
+        participantUser:
+          connectionData.currentlyGoingCall.participants.receiver,
         stream: undefined,
       });
 
@@ -94,7 +82,7 @@ export const SocketContextProvider = ({ children }) => {
         if (!socket) return;
         socket.emit("webrtcSignal", {
           sdp: data,
-          currentlyGoingCall,
+          currentlyGoingCall: connectionData.currentlyGoingCall,
           isCaller: false,
         });
       });
@@ -141,11 +129,7 @@ export const SocketContextProvider = ({ children }) => {
         const videoDevices = devices.filter(
           (device) => device.kind === "videoinput"
         );
-        const audioDevices = devices.filter(
-          (device) => device.kind === "audioinput"
-        );
-
-        const stream = navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video: {
             width: { min: 400, ideal: 800, max: 1200 },

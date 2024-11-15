@@ -1,4 +1,4 @@
-import { io } from "..server.py";
+import { io } from "../server.js";
 
 export const onWebRTCSignal = async (data) => {
   if (data.isCaller) {

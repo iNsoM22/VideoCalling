@@ -58,21 +58,26 @@ const VideoCall = () => {
       {/* Video Box */}
       <div>
         {localStream && (
-          <VideoBox
-            stream={localStream}
-            isLocalStream={true}
-            isOnCall={isOnCall}
-          />
+          <div>
+            <h3> My Video</h3>
+            <VideoBox
+              stream={localStream}
+              isLocalStream={true}
+              isOnCall={isOnCall}
+            />
+          </div>
         )}
 
-        {peerData &&
-          peerData.stream(
+        {peerData && peerData.stream && (
+          <div>
+            <h3> Other User's Video</h3>
             <VideoBox
               stream={peerData.stream}
               isLocalStream={false}
               isOnCall={isOnCall}
             />
-          )}
+          </div>
+        )}
       </div>
 
       {/* Control Buttons */}
