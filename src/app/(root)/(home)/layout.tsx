@@ -1,12 +1,12 @@
-import { Metadata } from "next";
-import { ReactNode } from "react";
+import { Metadata } from 'next';
+import { ReactNode } from 'react';
 
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/Sidebar";
+import Navbar from '@/components/Navbar';
+import Sidebar from '@/components/Sidebar';
 
 export const metadata: Metadata = {
-  title: "WebMAve",
-  description: "A solution to web meetings.",
+  title: 'WebMAve',
+  description: 'A solution to web meetings.',
 };
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {

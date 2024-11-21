@@ -1,21 +1,20 @@
-"use client";
-import { useEffect, useState } from "react";
+'use client';
+import { useEffect, useState } from 'react';
 import {
   DeviceSettings,
   VideoPreview,
   useCall,
   useCallStateHooks,
-} from "@stream-io/video-react-sdk";
+} from '@stream-io/video-react-sdk';
 
-import Alert from "./Notify";
-import { Button } from "./ui/button";
+import Notification from './Notify';
+import { Button } from './ui/button';
 
 const MeetingSetup = ({
   setIsSetupComplete,
 }: {
   setIsSetupComplete: (value: boolean) => void;
 }) => {
-  // https://getstream.io/video/docs/react/guides/call-and-participant-state/#call-state
   const { useCallEndedAt, useCallStartsAt } = useCallStateHooks();
   const callStartsAt = useCallStartsAt();
   const callEndedAt = useCallEndedAt();
@@ -27,33 +26,46 @@ const MeetingSetup = ({
 
   if (!call) {
     throw new Error(
-      "useStreamCall must be used within a StreamCall component."
+      'useStreamCall must be used within a StreamCall component.',
     );
   }
 
-  // https://getstream.io/video/docs/react/ui-cookbook/replacing-call-controls/
+  const [hasMic, sethasMic] = useState(false);
+  const [hasCamera, setHasCamera] = useState(false);
   const [isMicCamToggled, setIsMicCamToggled] = useState(false);
 
   useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true, video: true })
+      .then(function (stream) {
+        stream.getVideoTracks().length > 0
+          ? setHasCamera(true)
+          : setHasCamera(false);
+        stream.getAudioTracks().length > 0 ? sethasMic(true) : sethasMic(false);
+      })
+      .catch(function (error) {
+        // Do Nothing
+      });
+
     if (isMicCamToggled) {
-      call.camera.disable();
-      call.microphone.disable();
+      hasCamera && call.camera && call.camera?.disable();
+      hasMic && call.microphone && call.microphone?.disable();
     } else {
-      call.camera.enable();
-      call.microphone.enable();
+      hasCamera && call.camera && call.camera?.enable();
+      hasMic && call.microphone && call.microphone?.enable();
     }
   }, [isMicCamToggled, call.camera, call.microphone]);
 
   if (callTimeNotArrived)
     return (
-      <Alert
+      <Notification
         title={`Your Meeting has not started yet. It is scheduled for ${callStartsAt.toLocaleString()}`}
       />
     );
 
   if (callHasEnded)
     return (
-      <Alert
+      <Notification
         title="The call has been ended by the host"
         iconUrl="/icons/call-ended.svg"
       />
