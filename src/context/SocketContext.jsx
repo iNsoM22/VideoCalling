@@ -18,7 +18,7 @@ export const SocketContextProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [onGoingCall, setOnGoingCall] = useState([]);
   const [localStream, setLocalStream] = useState(null);
-  const [peerData, setPeerData] = useState(null);
+  const [peerData, setPeerData] = useState({});
 
   const currentSocketUser = onlineUsers.find(
     (onlineUser) => onlineUser.userID == user.email
