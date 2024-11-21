@@ -24,8 +24,11 @@ import EndCall from './CallDecline';
 import { cn } from '@/lib/utils';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
+type MeetingRoomProps = {
+  showOnlyHost: boolean;
+};
 
-const MeetingRoom = () => {
+const MeetingRoom = ({ showOnlyHost }: MeetingRoomProps) => {
   const searchParams = useSearchParams();
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();

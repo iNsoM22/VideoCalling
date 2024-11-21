@@ -17,6 +17,8 @@ interface MeetingModalProps {
   image?: string;
   buttonClassName?: string;
   buttonIcon?: string;
+  hasAudienceMode?: boolean;
+  handleAudienceClick?: () => void;
 }
 
 const MeetingModal = ({
@@ -31,6 +33,8 @@ const MeetingModal = ({
   image,
   buttonClassName,
   buttonIcon,
+  handleAudienceClick,
+  hasAudienceMode = false,
 }: MeetingModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -64,6 +68,26 @@ const MeetingModal = ({
             &nbsp;
             {buttonText || 'Schedule Meeting'}
           </Button>
+
+          {hasAudienceMode && (
+            <Button
+              className={
+                'bg-blue-1 focus-visible:ring-0 focus-visible:ring-offset-0'
+              }
+              onClick={handleAudienceClick}
+            >
+              {buttonIcon && (
+                <Image
+                  src={buttonIcon}
+                  alt="button icon"
+                  width={13}
+                  height={13}
+                />
+              )}{' '}
+              &nbsp;
+              {'Start with Audience Mode'}
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

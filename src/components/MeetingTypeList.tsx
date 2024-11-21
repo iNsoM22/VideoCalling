@@ -18,6 +18,7 @@ const initialValues = {
   dateTime: new Date(),
   description: '',
   link: '',
+  audience: false,
 };
 
 const MeetingTypeList = () => {
@@ -31,7 +32,7 @@ const MeetingTypeList = () => {
   const { user } = useUser();
   const { toast } = useToast();
 
-  const createMeeting = async () => {
+  const createMeeting = async (isAudience: boolean) => {
     if (!client || !user) return;
     try {
       if (!values.dateTime) {
@@ -44,11 +45,13 @@ const MeetingTypeList = () => {
       const startsAt =
         values.dateTime.toISOString() || new Date(Date.now()).toISOString();
       const description = values.description || 'Instant Meeting';
+      const audience = values.audience || isAudience;
       await call.getOrCreate({
         data: {
           starts_at: startsAt,
           custom: {
             description,
+            audience: isAudience,
           },
         },
       });
@@ -104,7 +107,7 @@ const MeetingTypeList = () => {
           isOpen={meetingState === 'isScheduleMeeting'}
           onClose={() => setMeetingState(undefined)}
           title="Create Meeting"
-          handleClick={createMeeting}
+          handleClick={() => createMeeting(false)}
         >
           <div className="flex flex-col gap-2.5">
             <label className="text-base font-normal leading-[22.4px] text-sky-2">
@@ -170,7 +173,9 @@ const MeetingTypeList = () => {
         title="Start an Instant Meeting"
         className="text-center"
         buttonText="Start Meeting"
-        handleClick={createMeeting}
+        handleClick={() => createMeeting(false)}
+        hasAudienceMode={true}
+        handleAudienceClick={() => createMeeting(true)}
       />
     </section>
   );
