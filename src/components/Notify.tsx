@@ -1,15 +1,15 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from "next/link";
+import Image from "next/image";
 
-import { Button } from './ui/button';
-import { Card, CardContent } from './ui/card';
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
 
 interface PermissionCardProps {
   title: string;
   iconUrl?: string;
 }
 
-const Alert = ({ title, iconUrl }: PermissionCardProps) => {
+const Notification = ({ title, iconUrl }: PermissionCardProps) => {
   return (
     <section className="flex-center h-screen w-full">
       <Card className="w-full max-w-[520px] border-none bg-dark-1 p-6 py-9 text-white">
@@ -34,4 +34,4 @@ const Alert = ({ title, iconUrl }: PermissionCardProps) => {
   );
 };
 
-export default Alert;
+export default Notification;

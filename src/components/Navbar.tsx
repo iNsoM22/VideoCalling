@@ -1,8 +1,8 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { SignedIn, UserButton } from '@clerk/nextjs';
+import Image from "next/image";
+import Link from "next/link";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 
-import MobileNav from './MobileNav';
+import MobileNavigation from "./MobileNavbar";
 
 const Navbar = () => {
   return (
@@ -24,7 +24,7 @@ const Navbar = () => {
           <UserButton afterSignOutUrl="/sign-in" />
         </SignedIn>
 
-        <MobileNav />
+        <MobileNavigation />
       </div>
     </nav>
   );
