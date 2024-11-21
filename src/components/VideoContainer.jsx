@@ -12,19 +12,21 @@ const VideoBox = ({ stream, isOnCall, isLocalStream }) => {
 
   return (
     <div className="w-80 h-48 bg-gray-900 rounded-lg shadow-lg overflow-hidden">
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        className="w-full h-full object-cover rounded-lg"
-      />
+      {stream && (
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted={isLocalStream}
+          className="w-full h-full object-cover rounded-lg"
+        />
+      )}
     </div>
   );
 };
 
 VideoBox.propTypes = {
-  stream: PropTypes.object.isRequired,
+  stream: PropTypes.object,
   isOnCall: PropTypes.bool.isRequired,
   isLocalStream: PropTypes.bool.isRequired,
 };
