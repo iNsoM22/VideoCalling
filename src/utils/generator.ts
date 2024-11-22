@@ -1,6 +1,6 @@
 export const MeetingGenerator = (): string => {
   const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%';
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_';
   const linkLength = 8;
   let meetingLink = '';
 

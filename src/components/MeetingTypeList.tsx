@@ -13,6 +13,7 @@ import { Textarea } from './ui/textarea';
 import ReactDatePicker from 'react-datepicker';
 import { useToast } from './ui/use-toast';
 import { Input } from './ui/input';
+import { MeetingGenerator } from '@/utils/generator';
 
 const initialValues = {
   dateTime: new Date(),
@@ -39,8 +40,8 @@ const MeetingTypeList = () => {
         toast({ title: 'Please select a date and time' });
         return;
       }
-      const id = crypto.randomUUID();
-      const call = client.call('default', id);
+      const meetingLink = MeetingGenerator();
+      const call = client.call('default', meetingLink);
       if (!call) throw new Error('Failed to create meeting');
       const startsAt =
         values.dateTime.toISOString() || new Date(Date.now()).toISOString();
@@ -51,10 +52,11 @@ const MeetingTypeList = () => {
           starts_at: startsAt,
           custom: {
             description,
-            audience: isAudience,
+            audience: audience,
           },
         },
       });
+
       setCallDetail(call);
       if (!values.description) {
         router.push(`/meeting/${call.id}`);
