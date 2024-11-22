@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { StreamCall, StreamTheme } from '@stream-io/video-react-sdk';
 import { useParams } from 'next/navigation';
@@ -16,7 +16,6 @@ const MeetingPage = () => {
   const { isLoaded, user } = useUser();
   const { call, isCallLoading } = useGetCallById(id!);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
-  const [showOnlyHost, setshowOnlyHost] = useState(false);
 
   if (!isLoaded || isCallLoading) return <Loader />;
 
@@ -26,20 +25,6 @@ const MeetingPage = () => {
         Call Not Found
       </p>
     );
-
-  const audienceStreamer = useCallback(() => {
-    //  Check is the call is in audience mode
-    if (call?.state.custom.audience) {
-      // Check if I am the Host or not
-      if (call.isCreatedByMe) {
-        setshowOnlyHost(false);
-      } else {
-        setshowOnlyHost(true);
-      }
-    } else {
-      setshowOnlyHost(false);
-    }
-  }, [call]);
 
   const notAllowed =
     call.type === 'invited' &&
@@ -55,7 +40,10 @@ const MeetingPage = () => {
           {!isSetupComplete ? (
             <MeetingSetup setIsSetupComplete={setIsSetupComplete} />
           ) : (
-            <MeetingRoom showOnlyHost={showOnlyHost} />
+            <MeetingRoom
+              hostID={call.state.createdBy!.id.toString()}
+              showOnlyHost={call.state.custom.audience}
+            />
           )}
         </StreamTheme>
       </StreamCall>

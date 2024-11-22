@@ -1,7 +1,7 @@
 'use client';
 
 import { Call, CallRecording } from '@stream-io/video-react-sdk';
-
+import { FaPhoneSlash } from 'react-icons/fa'; // React Icon for No Calls
 import Loader from './Loader';
 import { useGetCalls } from '@/hooks/useGetCalls';
 import MeetingCard from './MeetingCard';
@@ -68,7 +68,9 @@ const CallerList = ({
   const noCallsMessage = getNoCallsMessage();
 
   return (
-    <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+    <div
+      className={`grid grid-cols-1 gap-5 xl:${noCallsMessage !== '' ? 'grid-cols-1' : 'grid-cols-2'}`}
+    >
       {calls && calls.length > 0 ? (
         calls.map((meeting: Call | CallRecording) => (
           <MeetingCard
@@ -105,7 +107,19 @@ const CallerList = ({
           />
         ))
       ) : (
-        <h1 className="text-2xl font-bold text-white">{noCallsMessage}</h1>
+        <div className="flex flex-col items-center justify-center h-[50vh] text-center">
+          <FaPhoneSlash className="text-5xl text-gray-400 mb-4" />
+          <h1 className="text-xl font-semibold text-gray-300">
+            {noCallsMessage}
+          </h1>
+          <p className="text-sm text-gray-500">
+            {type === 'ended'
+              ? 'Looks like you have no past meetings.'
+              : type === 'upcoming'
+                ? 'You have no upcoming meetings planned.'
+                : 'No recordings are available at the moment.'}
+          </p>
+        </div>
       )}
     </div>
   );
