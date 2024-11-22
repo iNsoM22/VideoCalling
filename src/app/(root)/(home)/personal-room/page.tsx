@@ -89,11 +89,11 @@ const PersonalRoom = () => {
           description={meetingId || ''}
           icon={<FiVideo className="w-6 h-6" />}
         />
-        <InfoRow
+        {/* <InfoRow
           title="Invite Link"
           description={meetingLink}
           icon={<FiCopy className="w-6 h-6" />}
-        />
+        /> */}
       </div>
       <div className="flex gap-5">
         <Button
