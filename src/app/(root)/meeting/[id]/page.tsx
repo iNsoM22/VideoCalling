@@ -45,7 +45,6 @@ const MeetingPage = () => {
       description: `You can now share the Meeting ID: ${id}`,
     });
   };
-
   return (
     <main className="relative h-screen w-full">
       <StreamCall call={call}>
@@ -53,10 +52,7 @@ const MeetingPage = () => {
           {!isSetupComplete ? (
             <MeetingSetup setIsSetupComplete={setIsSetupComplete} />
           ) : (
-            <MeetingRoom
-              hostID={call.state.createdBy!.id.toString()}
-              showOnlyHost={call.state.custom.audience}
-            />
+            <MeetingRoom showEveryone={!call.state.custom.audience} />
           )}
         </StreamTheme>
       </StreamCall>

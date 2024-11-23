@@ -6,6 +6,7 @@ import {
   CallStatsButton,
   CallingState,
   PaginatedGridLayout,
+  ParticipantView,
   SpeakerLayout,
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
@@ -20,65 +21,99 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import Loader from './Loader';
-import EndCall from './CallDecline';
 import { cn } from '@/lib/utils';
-import { StreamVideoParticipant } from '@stream-io/video-client';
+import EndCall from './CallDecline';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
+
 type MeetingRoomProps = {
-  hostID: string;
-  showOnlyHost: boolean;
+  showEveryone: boolean;
 };
 
-const MeetingRoom = ({ hostID, showOnlyHost }: MeetingRoomProps) => {
+const CallLayout = ({
+  layout,
+  showEveryone,
+  isHost,
+  host,
+  localParticipant,
+}: {
+  layout: CallLayoutType;
+  showEveryone: boolean;
+  isHost: boolean;
+  host: any;
+  localParticipant: any;
+}) => {
+  if (showEveryone || isHost) {
+    if (layout === 'grid') return <PaginatedGridLayout />;
+    return <SpeakerLayout participantsBarPosition="right" />;
+  }
+  // Audience Mode: Show only host and local participant
+  return (
+    <div className="flex gap-4">
+      {host && (
+        <ParticipantView
+          participant={host}
+          key={host.sessionId}
+          className="rounded-xl shadow-lg"
+        />
+      )}
+      {localParticipant && (
+        <ParticipantView
+          participant={localParticipant}
+          key={localParticipant.sessionId}
+          className="rounded-xl shadow-lg"
+        />
+      )}
+    </div>
+  );
+};
+
+const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
   const searchParams = useSearchParams();
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
-  const { useCallCallingState, useParticipants } = useCallStateHooks();
+  const {
+    useCallCallingState,
+    useCallCreatedBy,
+    useLocalParticipant,
+    useRemoteParticipants,
+  } = useCallStateHooks();
 
-  // Handle calling state
   const callingState = useCallCallingState();
-  if (callingState !== CallingState.JOINED) return <Loader />;
+  const localParticipant = useLocalParticipant();
+  const remoteParticipants = useRemoteParticipants();
+  const hostInfo = useCallCreatedBy();
+  const host = remoteParticipants.find(
+    (participant) => participant.userId === hostInfo?.id,
+  );
+  const isHost = localParticipant?.userId === hostInfo?.id;
 
-  // Define the call layout
-  const CallLayout = () => {
-    switch (layout) {
-      case 'grid':
-        return <PaginatedGridLayout />;
-      case 'speaker-right':
-        return <SpeakerLayout participantsBarPosition="left" />;
-      default:
-        return <SpeakerLayout participantsBarPosition="right" />;
-    }
-  };
-  const filterUsers = async (searchQuery: string) => {
-    // ?
-  };
+  if (callingState !== CallingState.JOINED) return <Loader />;
 
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
-      <div className="relative flex h-full w-full items-center justify-center">
-        <div className="flex h-full w-full max-w-[1000px] items-center">
-          <CallLayout />
+      <div className="relative flex size-full items-center justify-center">
+        <div className="flex size-full max-w-[1000px] items-center">
+          <CallLayout
+            layout={layout}
+            showEveryone={showEveryone}
+            isHost={isHost}
+            host={host}
+            localParticipant={localParticipant}
+          />
         </div>
-        {/* Participants list */}
         <div
-          className={cn('h-[calc(100vh-86px)] ml-2', {
-            hidden: !showParticipants,
-            block: showParticipants,
+          className={cn('h-[calc(100vh-86px)] hidden ml-2', {
+            'show-block': showParticipants,
           })}
         >
-          <CallParticipantsList
-            // Here some sort of distinguisher should be passed
-            // activeUsersSearchFn={}
-            onClose={() => setShowParticipants(false)}
-          />
+          <CallParticipantsList onClose={() => setShowParticipants(false)} />
         </div>
       </div>
       {/* Video layout and call controls */}
-      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
+      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5 bg-opacity-90 bg-dark">
         <CallControls onLeave={() => router.push(`/`)} />
 
         <DropdownMenu>
