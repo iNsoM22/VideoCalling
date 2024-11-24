@@ -1,11 +1,12 @@
 'use client';
 
 import { useCall, useCallStateHooks } from '@stream-io/video-react-sdk';
-
 import { Button } from './ui/button';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { clearMessages } from '@/utils/messaging';
 
 const EndCall = () => {
+  const { id } = useParams();
   const call = useCall();
   const router = useRouter();
 
@@ -30,8 +31,14 @@ const EndCall = () => {
   };
 
   return (
-    <Button onClick={endCall} className="bg-red-500">
-      End call for everyone
+    <Button
+      onClick={() => {
+        clearMessages(id?.toString()!);
+        endCall();
+      }}
+      className="bg-red-500"
+    >
+      End Call for Everyone
     </Button>
   );
 };

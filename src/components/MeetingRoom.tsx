@@ -23,6 +23,7 @@ import {
 import Loader from './Loader';
 import { cn } from '@/lib/utils';
 import EndCall from './CallDecline';
+import ChatRoom from './SessionMessaging';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -103,6 +104,7 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
             host={host}
             localParticipant={localParticipant}
           />
+          <ChatRoom />
         </div>
         <div
           className={cn('h-[calc(100vh-86px)] hidden ml-2', {

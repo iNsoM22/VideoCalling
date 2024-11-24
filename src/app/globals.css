@@ -285,3 +285,74 @@
 .error-button.alt:hover {
   background: #4b5563;
 }
+
+/* Chat container */
+.chat-container {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: 400px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+/* Chat box */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Message list */
+.messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.message {
+  margin: 5px 0;
+  padding: 5px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+strong {
+  font-weight: bold;
+}
+
+/* Input area */
+.input-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input-area input {
+  width: 75%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.input-area button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.input-area button:hover {
+  background-color: #0056b3;
+}
