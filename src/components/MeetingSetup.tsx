@@ -35,6 +35,8 @@ const MeetingSetup = ({
   const [isMicCamToggled, setIsMicCamToggled] = useState(false);
 
   useEffect(() => {
+    call.camera.disable();
+    call.microphone.disable();
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
       .then(function (stream) {
@@ -44,15 +46,16 @@ const MeetingSetup = ({
         stream.getAudioTracks().length > 0 ? sethasMic(true) : sethasMic(false);
       })
       .catch(function (error) {
-        // Do Nothing
+        setHasCamera(false);
+        sethasMic(false);
       });
 
     if (isMicCamToggled) {
-      hasCamera && call.camera && call.camera?.disable();
-      hasMic && call.microphone && call.microphone?.disable();
+      hasCamera && call.camera && call.camera.disable();
+      hasMic && call.microphone && call.microphone.disable();
     } else {
-      hasCamera && call.camera && call.camera?.enable();
-      hasMic && call.microphone && call.microphone?.enable();
+      hasCamera && call.camera && call.camera.enable();
+      hasMic && call.microphone && call.microphone.enable();
     }
   }, [isMicCamToggled, call.camera, call.microphone]);
 
@@ -88,8 +91,8 @@ const MeetingSetup = ({
       </div>
       <Button
         className="rounded-md bg-green-500 px-4 py-2.5"
-        onClick={() => {
-          call.join();
+        onClick={async () => {
+          await call.join({ video: hasCamera });
 
           setIsSetupComplete(true);
         }}
