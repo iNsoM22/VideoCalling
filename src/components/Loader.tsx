@@ -11,6 +11,7 @@ const Loader = () => {
           width={80}
           height={80}
           className="spinner"
+          priority // Add this attribute for better performance
         />
 
         {/* Progress Bar */}
