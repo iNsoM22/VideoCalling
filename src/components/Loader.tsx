@@ -2,13 +2,25 @@ import Image from 'next/image';
 
 const Loader = () => {
   return (
-    <div className="flex-center h-screen w-full">
-      <Image
-        src="/icons/loading-circle.svg"
-        alt="Loading..."
-        width={50}
-        height={50}
-      />
+    <div className="loader-container">
+      <div className="loader-content">
+        {/* Rotating Spinner */}
+        <Image
+          src="/icons/loading-circle.svg"
+          alt="Loading..."
+          width={80}
+          height={80}
+          className="spinner"
+        />
+
+        {/* Progress Bar */}
+        <div className="progress-bar-container">
+          <div className="progress-bar"></div>
+        </div>
+
+        {/* Text */}
+        <p className="loader-text">Loading content, please wait...</p>
+      </div>
     </div>
   );
 };

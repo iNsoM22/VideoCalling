@@ -110,3 +110,109 @@
     width: 100%;
   }
 }
+
+/* Full-screen overlay */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    #1e293b,
+    #0f172a
+  ); /* Gradient background */
+  z-index: 9999;
+  animation: fadeIn 0.5s ease-in-out; /* Smooth entrance */
+}
+
+/* Centered content */
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+/* Rotating spinner */
+.spinner {
+  animation:
+    rotate 1.2s linear infinite,
+    glow 1.5s ease-in-out infinite;
+}
+
+/* Keyframe for spinner rotation */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Keyframe for glowing effect */
+@keyframes glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
+  }
+}
+
+/* Loader text */
+.loader-text {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+  opacity: 0.9;
+}
+
+/* Progress bar container */
+.progress-bar-container {
+  width: 200px;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+/* Progress bar animation */
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #34d399, #10b981); /* Green gradient */
+  animation: progress 2s infinite;
+}
+
+/* Keyframe for progress bar */
+@keyframes progress {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 75%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Fade-in animation for the loader */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
