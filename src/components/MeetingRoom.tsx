@@ -11,7 +11,7 @@ import {
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Users, LayoutList } from 'lucide-react';
+import { Users, LayoutList, MessageSquare } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -75,6 +75,7 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
+  const [showSessionMessages, setshowSessionMessages] = useState(false);
   const {
     useCallCallingState,
     useCallCreatedBy,
@@ -104,6 +105,12 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
             host={host}
             localParticipant={localParticipant}
           />
+        </div>
+        <div
+          className={cn('h-[calc(100vh-86px)] hidden ml-2', {
+            'show-block': showSessionMessages,
+          })}
+        >
           <ChatRoom />
         </div>
         <div
@@ -145,6 +152,11 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
         <button onClick={() => setShowParticipants((prev) => !prev)}>
           <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
             <Users size={20} className="text-white" />
+          </div>
+        </button>
+        <button onClick={() => setshowSessionMessages((prev) => !prev)}>
+          <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
+            <MessageSquare size={20} className="text-white" />
           </div>
         </button>
         {!isPersonalRoom && <EndCall />}

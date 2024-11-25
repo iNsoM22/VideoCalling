@@ -35,8 +35,6 @@ const MeetingSetup = ({
   const [isMicCamToggled, setIsMicCamToggled] = useState(false);
 
   useEffect(() => {
-    call.camera.disable();
-    call.microphone.disable();
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
       .then(function (stream) {
@@ -50,12 +48,15 @@ const MeetingSetup = ({
         sethasMic(false);
       });
 
+    if (!hasCamera) call.camera.disable();
+    if (!hasMic) call.microphone.disable();
+
     if (isMicCamToggled) {
-      hasCamera && call.camera && call.camera.disable();
-      hasMic && call.microphone && call.microphone.disable();
+      hasCamera && call.camera.disable();
+      hasMic && call.microphone.disable();
     } else {
-      hasCamera && call.camera && call.camera.enable();
-      hasMic && call.microphone && call.microphone.enable();
+      hasCamera && call.camera.enable();
+      hasMic && call.microphone.enable();
     }
   }, [isMicCamToggled, call.camera, call.microphone]);
 

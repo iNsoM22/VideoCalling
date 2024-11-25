@@ -85,7 +85,11 @@ const CallerList = ({
       {calls && calls.length > 0 ? (
         calls.map((meeting: Call | CallRecording) => (
           <MeetingCard
-            key={(meeting as Call)?.id || 'key'}
+            key={
+              (meeting as Call)?.id ||
+              (meeting as CallRecording)?.filename ||
+              Math.random()
+            }
             icon={
               type === 'ended'
                 ? '/icons/previous.svg'

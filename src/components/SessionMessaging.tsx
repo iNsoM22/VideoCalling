@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { sendMessage, supabase } from '@/utils/messaging';
 import { useParams } from 'next/navigation';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Skeleton } from './ui/skeleton';
 
 interface Message {
   username: string;
@@ -14,8 +17,12 @@ const ChatRoom: React.FC = () => {
   const session_id = id;
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
+  const [loading, setLoading] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  if (!isLoaded) return null;
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const channel = supabase
@@ -35,8 +42,9 @@ const ChatRoom: React.FC = () => {
       )
       .subscribe();
 
-    // Fetch initial messages from the session
+    // Fetch initial messages
     const fetchMessages = async () => {
+      setLoading(true);
       const { data, error } = await supabase
         .from('SessionMessages')
         .select('*')
@@ -47,6 +55,8 @@ const ChatRoom: React.FC = () => {
         console.error('Error fetching messages:', error.message);
       } else {
         setMessages(data);
+        setLoading(false);
+        scrollToBottom(); // Scroll to the latest message after loading
       }
     };
 
@@ -57,38 +67,62 @@ const ChatRoom: React.FC = () => {
     };
   }, [session_id]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  if (!isLoaded) return null;
+
   return (
-    <div className="chat-container">
-      <div className="chat-box">
-        <div className="messages">
-          {messages.map((msg, index) => (
-            <div key={index} className="message">
-              <strong>{msg.username}:</strong> {msg.message}
+    <div className="chat-container bg-gray-800 text-white p-4 rounded-lg shadow-lg w-full max-w-md mx-auto">
+      <h2 className="text-lg self-center font-bold mb-1">Session Messages</h2>
+      <div className="chat-box flex flex-col justify-between">
+        <div className="messages flex-1 space-y-3 overflow-y-auto max-h-[400px] border-b border-gray-700 pb-4">
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <Skeleton className="w-[100px] h-[20px] rounded-full" />
             </div>
-          ))}
+          ) : (
+            messages.map((msg, index) => (
+              <div
+                key={index}
+                className="message bg-gray-700 p-3 rounded-md text-sm"
+              >
+                <strong className="text-blue-400">{msg.username}:</strong>{' '}
+                {msg.message}
+              </div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
-        <div className="input-area">
-          <input
+        <div className="input-area flex mt-1 gap-2">
+          <Input
             type="text"
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
             placeholder="Type a message..."
+            className="flex-1 bg-gray-900 text-white border-gray-700 focus:ring-2 focus:ring-blue-500"
           />
-          <button
+          <Button
+            variant="outline"
+            className="bg-blue-600 text-white hover:bg-blue-700 transition"
             onClick={async () => {
-              let res = await sendMessage(
+              if (messageInput.trim() === '') return;
+              const res = await sendMessage(
                 session_id?.toString()!,
                 user?.username!,
                 messageInput.trim(),
               );
               if (res) {
                 setMessageInput('');
+              } else {
+                alert('Failed to send the message.');
               }
             }}
           >
             Send
-          </button>
+          </Button>
         </div>
       </div>
     </div>

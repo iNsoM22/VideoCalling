@@ -289,18 +289,22 @@
 /* Chat container */
 .chat-container {
   position: fixed;
-  right: 0;
-  top: 50%;
+  right: 16px;
+  top: 45%;
   transform: translateY(-50%);
-  width: 300px;
-  height: 400px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  width: 320px;
+  height: 520px;
+  background-color: #1e1e2f; /* Dark background */
+  box-shadow: 0 8px 16px rgba(83, 83, 83, 0.5);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 10px;
+  padding: 12px;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+  opacity: 1;
 }
 
 /* Chat box */
@@ -315,18 +319,41 @@
   flex-grow: 1;
   overflow-y: auto;
   margin-bottom: 10px;
+  padding-right: 8px;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #444 #2b2b3c; /* For Firefox */
+}
+
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background-color: #444; /* Thumb color */
+  border-radius: 4px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background-color: #2b2b3c; /* Track color */
 }
 
 .message {
-  margin: 5px 0;
-  padding: 5px;
-  background-color: #f1f1f1;
-  border-radius: 5px;
+  margin: 6px 0;
+  padding: 8px;
+  background-color: #2b2b3c; /* Darker message background */
+  color: #e0e0e0; /* Light text for readability */
+  border-radius: 8px;
   font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.message:hover {
+  background-color: #383850; /* Slightly lighter on hover */
 }
 
 strong {
   font-weight: bold;
+  color: #ffffff; /* Make usernames stand out */
 }
 
 /* Input area */
@@ -334,25 +361,52 @@ strong {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
 .input-area input {
-  width: 75%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 6px;
   font-size: 14px;
+  background-color: #2b2b3c; /* Input field background */
+  color: #e0e0e0; /* Light text color */
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.input-area input:focus {
+  outline: none;
+  border-color: #5a9fff; /* Highlight on focus */
+  box-shadow: 0 0 4px #5a9fff;
 }
 
 .input-area button {
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: #fff;
+  padding: 10px 14px;
+  background-color: #5a9fff; /* Primary button color */
+  color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .input-area button:hover {
-  background-color: #0056b3;
+  background-color: #3f85e5; /* Darker on hover */
+}
+
+.input-area button:active {
+  transform: scale(0.98); /* Subtle press effect */
+}
+
+/* Transitions for chat container (fade in/out effect) */
+.chat-container.hidden {
+  transform: translateY(-50%) translateX(50%);
+  opacity: 0;
 }
