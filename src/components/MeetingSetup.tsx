@@ -30,40 +30,57 @@ const MeetingSetup = ({
     );
   }
 
-  const [hasMic, sethasMic] = useState(false);
+  const [hasMic, setHasMic] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
   const [isMicCamToggled, setIsMicCamToggled] = useState(false);
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: true })
-      .then(function (stream) {
-        stream.getVideoTracks().length > 0
-          ? setHasCamera(true)
-          : setHasCamera(false);
-        stream.getAudioTracks().length > 0 ? sethasMic(true) : sethasMic(false);
-      })
-      .catch(function (error) {
+    let audioStream: MediaStream | null = null;
+    let videoStream: MediaStream | null = null;
+
+    const checkDevices = async () => {
+      try {
+        audioStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        setHasMic(audioStream.active);
+      } catch (error) {
+        setHasMic(false);
+      }
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        setHasCamera(videoStream.active);
+      } catch (error) {
         setHasCamera(false);
-        sethasMic(false);
-      });
+      }
+    };
 
-    hasCamera ? call.camera.enable() : call.camera.disable();
-    hasMic ? call.microphone.enable : call.microphone.disable();
+    checkDevices();
 
+    return () => {
+      audioStream && audioStream.getTracks().forEach((track) => track.stop());
+      videoStream && videoStream.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
+
+  useEffect(() => {
     if (isMicCamToggled) {
       hasCamera && call.camera.disable();
-      hasMic && call.microphone.disable();
+      hasMic && call.microphone.enable();
     } else {
       hasCamera && call.camera.enable();
       hasMic && call.microphone.enable();
     }
-  }, [isMicCamToggled, call.camera, call.microphone]);
+  }, [isMicCamToggled, hasCamera, hasMic, call]);
 
   if (callTimeNotArrived)
     return (
       <Notification
-        title={`Your Meeting has not started yet. It is scheduled for ${callStartsAt.toLocaleString()}`}
+        title={`Your Meeting has not started yet. It is scheduled for ${new Date(
+          callStartsAt,
+        ).toLocaleString()}`}
       />
     );
 
@@ -94,7 +111,6 @@ const MeetingSetup = ({
         className="rounded-md bg-green-500 px-4 py-2.5"
         onClick={async () => {
           await call.join({ video: hasCamera });
-
           setIsSetupComplete(true);
         }}
       >
