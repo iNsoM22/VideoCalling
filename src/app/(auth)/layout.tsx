@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
+import Landing from './landing';
 
 export const metadata: Metadata = {
   title: 'WebMAve',
@@ -8,17 +9,22 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
-    <main>
-      <div className="flex flex-col items-end min-h-screen h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-        {/* Main Content */}
-        {children}
+    <main className="overflow-hidden">
+      {/* Hide scrollbars globally */}
+      <div className="relative flex flex-col justify-end h-screen w-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+        {/* Landing Page Section */}
+        <Landing />
 
-        {/* Footer */}
-        <footer className="w-full text-center text-sm text-gray-400 py-2">
-          <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} WebMAve. All rights reserved.
-          </p>
-        </footer>
+        {/* Main Content Section */}
+        <div className="absolute flex justify-end w-full main-content">
+          {' '}
+          {/* Change justify-end to justify-start */}
+          <div className="w-full sm:w-3/5 lg:w-1/3 ml-10">
+            {' '}
+            {/* Add left margin */}
+            {children}
+          </div>
+        </div>
       </div>
     </main>
   );

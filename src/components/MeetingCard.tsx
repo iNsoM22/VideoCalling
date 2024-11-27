@@ -50,8 +50,10 @@ const MeetingCard = ({
               alt="attendees"
               width={40}
               height={40}
-              className={cn('rounded-full', { absolute: index > 0 })}
-              style={{ top: 0, left: index * 28 }}
+              className={cn('rounded-full w-[50px] h-[50px]', {
+                absolute: index > 0,
+              })}
+              style={{ top: 0, left: index * 30 }}
             />
           ))}
           <div className="flex-center absolute left-[136px] size-10 rounded-full border-[5px] border-dark-3 bg-dark-4">

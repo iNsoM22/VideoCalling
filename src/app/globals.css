@@ -7,6 +7,101 @@
   padding: 0;
   box-sizing: border-box;
 }
+@layer utilities {
+  /* Smooth Landing Animation */
+  @keyframes fadeInLanding {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(1.1); /* Slightly scale up at the start */
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1); /* Normalize size */
+    }
+  }
+
+  /* Smooth Slide-In Animation for Main Content */
+  @keyframes slideInContent {
+    0% {
+      opacity: 0;
+      transform: translateX(100%); /* Start from the right */
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0); /* End at normal position */
+    }
+  }
+
+  /* Floating Animation */
+  @keyframes floating {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-30px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* FadeIn Animation for Title/Subheading */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px); /* Start slightly below */
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0); /* End at normal position */
+    }
+  }
+
+  /* Apply Landing Animation */
+  .landing-animation {
+    animation: fadeInLanding 3s ease-out forwards; /* Slower and smoother fade-in */
+  }
+
+  /* Apply Slide-In Animation for Main Content */
+  .main-content {
+    animation: slideInContent 3s ease-out 2s forwards; /* Longer slide-in with delay */
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  /* Apply Floating Animation for Decorative Elements */
+  .animate-floating {
+    animation: floating 8s ease-in-out infinite; /* Slower floating for dynamic effect */
+  }
+
+  /* Apply the fade-in animation */
+  .animate-fadeIn {
+    animation: fadeIn 3s ease-out forwards;
+  }
+
+  /* Staggered FadeIn for each sentence */
+  .animate-fadeIn-1 {
+    animation: fadeIn 3s ease-out 0s forwards; /* First element */
+  }
+
+  .animate-fadeIn-2 {
+    animation: fadeIn 3s ease-out 1s forwards; /* Second element */
+  }
+
+  .animate-fadeIn-3 {
+    animation: fadeIn 3s ease-out 2s forwards; /* Third element */
+  }
+
+  /* Hide Scrollbars */
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 
 /* ======== stream css overrides ======== */
 .str-video__call-stats {

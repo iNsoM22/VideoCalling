@@ -56,6 +56,8 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        floating: 'floating 6s ease-in-out infinite',
+        fadeIn: 'fadeIn 2s ease-in',
       },
       backgroundImage: {
         hero: "url('/images/hero-background.png')",

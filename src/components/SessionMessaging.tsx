@@ -42,7 +42,6 @@ const ChatRoom: React.FC = () => {
       )
       .subscribe();
 
-    // Fetch initial messages
     const fetchMessages = async () => {
       setLoading(true);
       const { data, error } = await supabase
@@ -56,7 +55,7 @@ const ChatRoom: React.FC = () => {
       } else {
         setMessages(data);
         setLoading(false);
-        scrollToBottom(); // Scroll to the latest message after loading
+        scrollToBottom();
       }
     };
 
@@ -72,6 +71,24 @@ const ChatRoom: React.FC = () => {
   }, [messages]);
 
   if (!isLoaded) return null;
+
+  const handleSend = async () => {
+    if (messageInput.trim() === '') return;
+    const res = await sendMessage(
+      session_id?.toString()!,
+      user?.username!,
+      messageInput.trim(),
+    );
+    if (res) {
+      setMessageInput('');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  };
 
   return (
     <div className="chat-container bg-gray-800 text-white p-4 rounded-lg shadow-lg w-full max-w-md mx-auto">
@@ -101,25 +118,14 @@ const ChatRoom: React.FC = () => {
             type="text"
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
+            onKeyDown={handleKeyPress}
             placeholder="Type a message..."
             className="flex-1 bg-gray-900 text-white border-gray-700 focus:ring-2 focus:ring-blue-500"
           />
           <Button
             variant="outline"
             className="bg-blue-600 text-white hover:bg-blue-700 transition"
-            onClick={async () => {
-              if (messageInput.trim() === '') return;
-              const res = await sendMessage(
-                session_id?.toString()!,
-                user?.username!,
-                messageInput.trim(),
-              );
-              if (res) {
-                setMessageInput('');
-              } else {
-                alert('Failed to send the message.');
-              }
-            }}
+            onClick={handleSend}
           >
             Send
           </Button>
