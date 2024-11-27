@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { sendMessage, supabase } from '@/utils/messaging';
 import { useParams } from 'next/navigation';
