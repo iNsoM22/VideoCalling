@@ -48,8 +48,8 @@ const MeetingSetup = ({
         sethasMic(false);
       });
 
-    if (!hasCamera) call.camera.disable();
-    if (!hasMic) call.microphone.disable();
+    hasCamera ? call.camera.enable() : call.camera.disable();
+    hasMic ? call.microphone.enable : call.microphone.disable();
 
     if (isMicCamToggled) {
       hasCamera && call.camera.disable();
