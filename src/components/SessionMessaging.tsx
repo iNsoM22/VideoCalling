@@ -14,7 +14,7 @@ interface Message {
 const ChatRoom: React.FC = () => {
   const { isLoaded, user } = useUser();
   const { id } = useParams();
-  const session_id = id;
+  const sessionId = id;
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ const ChatRoom: React.FC = () => {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'SessionMessages' },
         (payload) => {
-          if (payload.new.session_id === session_id) {
+          if (payload.new.session_id === sessionId) {
             const { username, message } = payload.new;
             setMessages((prevMessages) => [
               ...prevMessages,
@@ -47,7 +47,7 @@ const ChatRoom: React.FC = () => {
       const { data, error } = await supabase
         .from('SessionMessages')
         .select('*')
-        .eq('session_id', session_id)
+        .eq('session_id', sessionId)
         .order('created_at', { ascending: true });
 
       if (error) {
@@ -64,7 +64,7 @@ const ChatRoom: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session_id]);
+  }, [sessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -75,7 +75,7 @@ const ChatRoom: React.FC = () => {
   const handleSend = async () => {
     if (messageInput.trim() === '') return;
     const res = await sendMessage(
-      session_id?.toString()!,
+      sessionId?.toString()!,
       user?.username!,
       messageInput.trim(),
     );
@@ -91,19 +91,19 @@ const ChatRoom: React.FC = () => {
   };
 
   return (
-    <div className="chat-container bg-gray-800 text-white p-4 rounded-lg shadow-lg w-full max-w-md mx-auto">
-      <h2 className="text-lg self-center font-bold mb-1">Session Messages</h2>
+    <div className="chat-container mx-auto w-full max-w-md rounded-lg bg-gray-800 p-4 text-white shadow-lg">
+      <h2 className="mb-1 self-center text-lg font-bold">Session Messages</h2>
       <div className="chat-box flex flex-col justify-between">
-        <div className="messages flex-1 space-y-3 overflow-y-auto max-h-[400px] border-b border-gray-700 pb-4">
+        <div className="messages max-h-[400px] flex-1 space-y-3 overflow-y-auto border-b border-gray-700 pb-4">
           {loading ? (
-            <div className="flex justify-center items-center">
-              <Skeleton className="w-[100px] h-[20px] rounded-full" />
+            <div className="flex items-center justify-center">
+              <Skeleton className="h-[20px] w-[100px] rounded-full" />
             </div>
           ) : (
             messages.map((msg, index) => (
               <div
                 key={index}
-                className="message bg-gray-700 p-3 rounded-md text-sm"
+                className="message rounded-md bg-gray-700 p-3 text-sm"
               >
                 <strong className="text-blue-400">{msg.username}:</strong>{' '}
                 {msg.message}
@@ -113,18 +113,18 @@ const ChatRoom: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="input-area flex mt-1 gap-2">
+        <div className="input-area mt-1 flex gap-2">
           <Input
             type="text"
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Type a message..."
-            className="flex-1 bg-gray-900 text-white border-gray-700 focus:ring-2 focus:ring-blue-500"
+            className="flex-1 border-gray-700 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500"
           />
           <Button
             variant="outline"
-            className="bg-blue-600 text-white hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white transition hover:bg-blue-700"
             onClick={handleSend}
           >
             Send

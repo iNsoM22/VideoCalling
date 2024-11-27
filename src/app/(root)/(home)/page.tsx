@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCallStateHooks } from '@stream-io/video-react-sdk';
 import MeetingTypeList from '@/components/MeetingTypeList';
 

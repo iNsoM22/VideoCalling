@@ -5,7 +5,7 @@ import { FaPhoneSlash } from 'react-icons/fa';
 import Loader from './Loader';
 import { useGetCalls } from '@/hooks/useGetCalls';
 import MeetingCard from './MeetingCard';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const CallerList = ({
@@ -125,8 +125,8 @@ const CallerList = ({
           />
         ))
       ) : (
-        <div className="flex flex-col items-center justify-center h-[50vh] text-center">
-          <FaPhoneSlash className="text-5xl text-gray-400 mb-4" />
+        <div className="flex h-[50vh] flex-col items-center justify-center text-center">
+          <FaPhoneSlash className="mb-4 text-5xl text-gray-400" />
           <h1 className="text-xl font-semibold text-gray-300">
             {noCallsMessage}
           </h1>

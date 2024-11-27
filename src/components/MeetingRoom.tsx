@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   CallControls,
   CallParticipantsList,
@@ -107,14 +107,14 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
           />
         </div>
         <div
-          className={cn('h-[calc(100vh-86px)] hidden ml-2', {
+          className={cn('ml-2 hidden h-[calc(100vh-86px)]', {
             'show-block': showSessionMessages,
           })}
         >
           <ChatRoom />
         </div>
         <div
-          className={cn('h-[calc(100vh-86px)] hidden ml-2', {
+          className={cn('ml-2 hidden h-[calc(100vh-86px)]', {
             'show-block': showParticipants,
           })}
         >
@@ -122,7 +122,7 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
         </div>
       </div>
       {/* Video layout and call controls */}
-      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5 bg-opacity-90 bg-dark">
+      <div className="bg-dark fixed bottom-0 flex w-full items-center justify-center gap-5 opacity-90">
         <CallControls onLeave={() => router.push(`/`)} />
 
         <DropdownMenu>

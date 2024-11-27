@@ -4,6 +4,7 @@ import { useCall, useCallStateHooks } from '@stream-io/video-react-sdk';
 import { Button } from './ui/button';
 import { useParams, useRouter } from 'next/navigation';
 import { clearMessages } from '@/utils/messaging';
+import React from 'react';
 
 const EndCall = () => {
   const { id } = useParams();

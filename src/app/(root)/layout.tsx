@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import StreamVideoProvider from "../../provider/StreamClientProvider";
+import React, { ReactNode } from 'react';
+import StreamVideoProvider from '../../provider/StreamClientProvider';
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (

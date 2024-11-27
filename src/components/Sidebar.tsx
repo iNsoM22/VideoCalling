@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 
 import { sidebarLinks } from '@/constants';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -21,13 +22,13 @@ const Sidebar = () => {
               href={item.route}
               key={item.label}
               className={cn(
-                'flex gap-4 items-center p-4 rounded-lg justify-start',
+                'flex items-center justify-start gap-4 rounded-lg p-4',
                 {
                   'bg-blue-1': isActive,
                 },
               )}
             >
-              <div className="w-6 h-6 relative">
+              <div className="relative size-6">
                 <Image
                   src={item.imgURL}
                   alt={item.label}

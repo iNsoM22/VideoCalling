@@ -1,4 +1,4 @@
-import { ReactNode, Suspense } from 'react';
+import React, { ReactNode, Suspense } from 'react';
 import Loader from '@/components/Loader';
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {

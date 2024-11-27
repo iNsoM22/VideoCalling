@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 interface HomeCardProps {
   className?: string;
@@ -21,7 +22,7 @@ const HomeCard = ({
   return (
     <section
       className={cn(
-        'bg-orange-1 px-4 py-6 flex flex-col justify-between w-full xl:max-w-[270px] min-h-[260px] rounded-[14px] cursor-pointer',
+        'flex min-h-[260px] w-full cursor-pointer flex-col justify-between rounded-[14px] bg-orange-1 px-4 py-6 xl:max-w-[270px]',
         className,
       )}
       onClick={handleClick}
@@ -32,7 +33,7 @@ const HomeCard = ({
           alt={title}
           width={27}
           height={27}
-          className="w-auto h-auto"
+          className="size-auto"
         />
       </div>
 

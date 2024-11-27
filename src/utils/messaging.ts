@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import React from 'react';
 
 export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -6,16 +7,13 @@ export const supabase = createClient(
 );
 
 // Function to clear all messages for a session
-export const clearMessages = async (session_id: string) => {
-  const { data, error } = await supabase
-    .from('SessionMessages')
-    .delete()
-    .eq('session_id', session_id);
+export const clearMessages = async (sessionId: string) => {
+  await supabase.from('SessionMessages').delete().eq('session_id', sessionId);
 };
 
 // Function to send a message to the session
 export const sendMessage = async (
-  session_id: string,
+  sessionId: string,
   username: string,
   message: string,
 ): Promise<boolean> => {
@@ -23,7 +21,7 @@ export const sendMessage = async (
 
   const { data, error } = await supabase
     .from('SessionMessages')
-    .insert([{ session_id: session_id, username, message }]);
+    .insert([{ session_id: sessionId, username, message }]);
 
   if (error) {
     console.error('Error sending message:', error.message);

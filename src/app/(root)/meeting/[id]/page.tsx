@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { StreamCall, StreamTheme } from '@stream-io/video-react-sdk';
 import { useParams } from 'next/navigation';
@@ -58,7 +58,7 @@ const MeetingPage = () => {
       </StreamCall>
 
       {/* Floating Meeting ID Box */}
-      <div className="fixed bottom-8 right-8 z-50 flex items-center gap-4 p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-lg">
+      <div className="fixed bottom-8 right-8 z-50 flex items-center gap-4 rounded-lg border border-gray-700 bg-gray-800 p-4 shadow-lg">
         <div className="flex flex-col">
           <span className="text-sm font-semibold text-gray-400">
             Meeting ID:
@@ -67,9 +67,9 @@ const MeetingPage = () => {
         </div>
         <button
           onClick={handleCopyMeetingId}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-md hover:bg-blue-700"
+          className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-700"
         >
-          <FiCopy className="w-4 h-4" />
+          <FiCopy className="size-4" />
           Copy
         </button>
       </div>
