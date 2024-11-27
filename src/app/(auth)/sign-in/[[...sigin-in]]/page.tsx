@@ -2,7 +2,7 @@ import { SignIn } from '@clerk/nextjs';
 
 export default function SiginInPage() {
   return (
-    <main className="flex h-screen w-full items-center justify-center">
+    <main className="flex items-center justify-center md:h-screen">
       <SignIn />
     </main>
   );

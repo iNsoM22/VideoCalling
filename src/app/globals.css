@@ -32,6 +32,17 @@
     }
   }
 
+  @keyframes slideUpContent {
+    0% {
+      opacity: 0;
+      transform: translateY(700%); /* Start from bottom */
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0); /* End at normal position */
+    }
+  }
+
   /* Floating Animation */
   @keyframes floating {
     0% {
@@ -69,6 +80,11 @@
     transform: translateX(100%);
   }
 
+  .main-content-bottom-up {
+    animation: slideUpContent 10s ease-out 4s forwards; /* Longer slide-in with delay */
+    opacity: 0;
+    transform: translateY(700%);
+  }
   /* Apply Floating Animation for Decorative Elements */
   .animate-floating {
     animation: floating 8s ease-in-out infinite; /* Slower floating for dynamic effect */
