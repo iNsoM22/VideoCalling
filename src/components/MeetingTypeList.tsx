@@ -164,7 +164,7 @@ const MeetingTypeList = () => {
           router.push(
             values.link.includes(process.env.NEXT_PUBLIC_BASE_URL!)
               ? values.link
-              : process.env.NEXT_PUBLIC_BASE_URL + values.link,
+              : `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${values.link}`,
           )
         }
       >

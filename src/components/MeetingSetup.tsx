@@ -93,22 +93,28 @@ const MeetingSetup = ({
     );
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-3 text-white">
-      <h1 className="text-center text-2xl font-bold">Setup</h1>
-      <VideoPreview />
-      <div className="flex h-16 items-center justify-center gap-3">
-        <label className="flex items-center justify-center gap-2 font-medium">
+    <div className="flex h-screen flex-col items-center justify-center pb-10 text-white">
+      <h1 className="mb-4 w-full text-center text-2xl font-bold">
+        Waiting Room
+      </h1>
+      <div className="self-center px-5 py-2">
+        <VideoPreview className="size-[15rem] sm:size-[22rem] md:size-[30rem]" />
+      </div>
+
+      <div className="flex w-auto justify-center gap-3 sm:items-center">
+        <label className="flex items-center justify-center gap-2 text-sm font-medium sm:text-base">
           <input
             type="checkbox"
             checked={isMicCamToggled}
             onChange={(e) => setIsMicCamToggled(e.target.checked)}
+            className="size-4"
           />
           Join with mic and camera off
         </label>
         <DeviceSettings />
       </div>
       <Button
-        className="rounded-md bg-green-500 px-4 py-2.5"
+        className="mt-4 rounded-md bg-green-500 px-6 py-3 text-sm sm:mt-6 sm:text-base"
         onClick={async () => {
           await call.join({ video: hasCamera });
           setIsSetupComplete(true);

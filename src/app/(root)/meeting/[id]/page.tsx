@@ -19,6 +19,7 @@ const MeetingPage = () => {
   const { call, isCallLoading } = useGetCallById(id!);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
   const { toast } = useToast();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   if (!isLoaded || isCallLoading) return <Loader />;
 
@@ -45,6 +46,12 @@ const MeetingPage = () => {
       description: `You can now share the Meeting ID: ${id}`,
     });
   };
+
+  const handleIconClick = () => {
+    setIsExpanded(true);
+    setTimeout(() => setIsExpanded(false), 3000);
+  };
+
   return (
     <main className="relative h-screen w-full">
       <StreamCall call={call}>
@@ -58,20 +65,36 @@ const MeetingPage = () => {
       </StreamCall>
 
       {/* Floating Meeting ID Box */}
-      <div className="fixed bottom-8 right-8 z-50 flex items-center gap-4 rounded-lg border border-gray-700 bg-gray-800 p-4 shadow-lg">
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold text-gray-400">
-            Meeting ID:
-          </span>
-          <span className="text-lg font-bold text-white">{id}</span>
-        </div>
-        <button
-          onClick={handleCopyMeetingId}
-          className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-700"
-        >
-          <FiCopy className="size-4" />
-          Copy
-        </button>
+      <div
+        className={`duration-3000 fixed bottom-[4rem] right-4 z-50 flex w-auto items-center gap-4 rounded-lg border border-gray-700 bg-gray-800 p-2 shadow-lg transition-all md:bottom-8 md:right-8 ${
+          isExpanded ? 'opacity-100' : 'opacity-40 md:opacity-100'
+        }`}
+      >
+        {/* Mobile view only shows the button until expanded */}
+        {!isExpanded ? (
+          <button
+            onClick={handleIconClick}
+            className="flex size-8 items-center justify-center rounded-md bg-blue-600 p-2 text-white hover:bg-blue-700"
+          >
+            <FiCopy className="text-xl" />
+          </button>
+        ) : (
+          <>
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold text-gray-400">
+                Meeting ID:
+              </span>
+              <span className="text-lg font-bold text-white">{id}</span>
+            </div>
+            <button
+              onClick={handleCopyMeetingId}
+              className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-700"
+            >
+              <FiCopy className="text-lg" />
+              Copy
+            </button>
+          </>
+        )}
       </div>
     </main>
   );
