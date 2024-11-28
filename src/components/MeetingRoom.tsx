@@ -5,9 +5,7 @@ import {
   CallParticipantsList,
   CallStatsButton,
   CallingState,
-  PaginatedGridLayout,
   ParticipantView,
-  SpeakerLayout,
   StreamVideoParticipant,
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
