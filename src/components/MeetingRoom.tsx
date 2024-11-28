@@ -55,14 +55,14 @@ const CallLayout = ({
         <ParticipantView
           participant={host}
           key={host.sessionId}
-          className="rounded-xl shadow-lg"
+          className="size-80 rounded-xl shadow-lg"
         />
       )}
       {localParticipant && (
         <ParticipantView
           participant={localParticipant}
           key={localParticipant.sessionId}
-          className="rounded-xl shadow-lg"
+          className="size-60 rounded-xl shadow-lg"
         />
       )}
     </div>
