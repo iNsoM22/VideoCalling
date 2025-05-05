@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useCallStateHooks } from '@stream-io/video-react-sdk';
+import { useGetCalls } from '@/hooks/useGetCalls';
 import MeetingTypeList from '@/components/MeetingTypeList';
+import { Call } from '@stream-io/video-react-sdk';
 
 const Home = () => {
-  const { useCallStartsAt } = useCallStateHooks();
-  const callStartsAt = useCallStartsAt();
+  const { upcomingCalls, isLoading } = useGetCalls();
+  const [closestMeeting, setClosestMeeting] = useState<Call | null>(null);
 
   const now = new Date();
   const time = now.toLocaleTimeString('en-US', {
@@ -17,20 +18,30 @@ const Home = () => {
     now,
   );
 
-  // Determine the upcoming meeting time if available
-  const [meetingTime, setMeetingTime] = useState<string | null>(null);
-
   useEffect(() => {
-    if (callStartsAt) {
-      const startTime = new Date(callStartsAt);
-      setMeetingTime(
-        startTime.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      );
+    if (upcomingCalls && upcomingCalls.length > 0) {
+      const sorted = [...upcomingCalls].sort((a, b) => {
+        const aDate = a.state.startsAt?.getTime() || 0;
+        const bDate = b.state.startsAt?.getTime() || 0;
+        return aDate - bDate;
+      });
+
+      const upcoming = sorted.find((call) => {
+        const startsAt = call.state.startsAt;
+        return startsAt && startsAt > new Date();
+      });
+
+      setClosestMeeting(upcoming || null);
     }
-  }, [callStartsAt]);
+  }, [upcomingCalls]);
+
+  const meetingTime = closestMeeting?.state.startsAt?.toLocaleTimeString(
+    'en-US',
+    {
+      hour: '2-digit',
+      minute: '2-digit',
+    },
+  );
 
   return (
     <section className="flex size-full flex-col gap-5 text-white">
@@ -39,7 +50,9 @@ const Home = () => {
           <h2 className="glassmorphism max-w-[273px] rounded py-2 text-center text-base font-normal">
             {meetingTime
               ? `Upcoming Meeting at: ${meetingTime}`
-              : 'No upcoming meetings'}
+              : isLoading
+                ? 'Loading upcoming meetings...'
+                : 'No upcoming meetings'}
           </h2>
           <div className="flex flex-col gap-2">
             <h1 className="text-4xl font-extrabold lg:text-7xl">{time}</h1>
