@@ -25,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider
+        
         appearance={{
           layout: {
             socialButtonsVariant: 'iconButton',

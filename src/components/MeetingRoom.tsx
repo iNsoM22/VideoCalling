@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import {
   CallControls,
   CallParticipantsList,
@@ -7,6 +9,7 @@ import {
   ParticipantView,
   StreamVideoParticipant,
   useCallStateHooks,
+  useCall,
 } from '@stream-io/video-react-sdk';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Users, LayoutList, MessageSquare } from 'lucide-react';
@@ -99,14 +102,12 @@ const CallLayout = ({
 
   // Audience Mode: Show only host and local participant
   return (
-    <div
-      className={`flex w-full flex-col items-center justify-center gap-4 md:mt-20 md:flex-none`}
-    >
+    <div className="flex w-full flex-col items-center justify-center gap-4 md:mt-20 md:flex-none">
       {host && (
         <ParticipantView
           participant={host}
           key={host.sessionId}
-          className={`w-[25rem] rounded-xl shadow-lg md:m-auto md:h-[70vh] md:w-[80vw]`}
+          className="w-[25rem] rounded-xl shadow-lg md:m-auto md:h-[70vh] md:w-[80vw]"
         />
       )}
       {localParticipant && (
@@ -127,8 +128,8 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
   const [showSessionMessages, setshowSessionMessages] = useState(false);
-  const [newMessage, setNewMessage] = useState(false); // Track new message state
-  const [lastMessageId, setLastMessageId] = useState(''); // Track last message ID
+  const [newMessage, setNewMessage] = useState(false);
+  const [lastMessageId, setLastMessageId] = useState('');
 
   const {
     useCallCallingState,
@@ -141,10 +142,26 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
   const localParticipant = useLocalParticipant();
   const remoteParticipants = useRemoteParticipants();
   const hostInfo = useCallCreatedBy();
+  const call = useCall();
+
   const host = remoteParticipants.find(
     (participant) => participant.userId === hostInfo?.id,
   );
   const isHost = localParticipant?.userId === hostInfo?.id;
+
+  useEffect(() => {
+    if (!call) return;
+
+    const handleCallEnded = () => {
+      router.push('/');
+    };
+
+    call.on('call.ended', handleCallEnded);
+
+    return () => {
+      call.off('call.ended', handleCallEnded);
+    };
+  }, [call, router]);
 
   if (callingState !== CallingState.JOINED) return <Loader />;
 
@@ -184,11 +201,11 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
         </div>
       </div>
 
-      {/* Video layout and call controls */}
+      {/* Call controls */}
       <div className="bg-dark fixed bottom-0 flex w-full items-center justify-center p-3 opacity-90">
         <div className="scrollbar-hidden flex items-center space-x-4 overflow-x-auto px-3">
           <div className="flex items-center space-x-4">
-            <CallControls onLeave={() => router.push(`/`)} />
+            <CallControls onLeave={() => router.push('/')} />
           </div>
 
           <div className="flex items-center space-x-4">
@@ -198,6 +215,7 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
+                sideOffset={8}
                 className="border-dark-1 bg-dark-1 text-white"
               >
                 {['Grid', 'Speaker-Left', 'Speaker-Right'].map(
@@ -233,11 +251,11 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
                 const isOpening = !showSessionMessages;
                 setshowSessionMessages(isOpening);
                 setShowParticipants(false);
-                if (isOpening) {
-                  setNewMessage(false); // Reset new message indicator when opening the chat
-                }
+                if (isOpening) setNewMessage(false);
               }}
-              className={`cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b] ${newMessage && !showSessionMessages ? 'bg-red-500' : ''}`}
+              className={`cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b] ${
+                newMessage && !showSessionMessages ? 'bg-red-500' : ''
+              }`}
             >
               <MessageSquare size={20} className="text-white" />
             </button>
