@@ -204,7 +204,7 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
       {/* Call controls */}
       <div className="bg-dark fixed bottom-0 flex w-full items-center justify-center p-3 opacity-90">
         <div className="scrollbar-hidden flex items-center space-x-4 overflow-x-auto px-3">
-          <div className="flex items-center space-x-4">
+          <div className="bottom-0 flex w-full items-center space-x-4">
             <CallControls onLeave={() => router.push('/')} />
           </div>
 
