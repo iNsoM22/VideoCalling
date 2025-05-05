@@ -1,4 +1,3 @@
-'use client';
 import React, { useState } from 'react';
 import {
   CallControls,
@@ -128,6 +127,9 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
   const [showSessionMessages, setshowSessionMessages] = useState(false);
+  const [newMessage, setNewMessage] = useState(false); // Track new message state
+  const [lastMessageId, setLastMessageId] = useState(''); // Track last message ID
+
   const {
     useCallCallingState,
     useCallCreatedBy,
@@ -168,7 +170,10 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
             'show-block': showSessionMessages,
           })}
         >
-          <ChatRoom />
+          <ChatRoom
+            setStateProp={setNewMessage}
+            lastMessageId={lastMessageId}
+          />
         </div>
         <div
           className={cn('ml-2 hidden h-[calc(100vh-86px)]', {
@@ -181,22 +186,20 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
 
       {/* Video layout and call controls */}
       <div className="bg-dark fixed bottom-0 flex w-full items-center justify-center p-3 opacity-90">
-        {/* Unified Scrollable Section */}
         <div className="scrollbar-hidden flex items-center space-x-4 overflow-x-auto px-3">
-          {/* Call Controls */}
           <div className="flex items-center space-x-4">
             <CallControls onLeave={() => router.push(`/`)} />
-            {/* Add more buttons inside CallControls as needed */}
           </div>
 
-          {/* Additional Features */}
           <div className="flex items-center space-x-4">
-            {/* Dropdown Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
                 <LayoutList size={20} className="text-white" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="border-dark-1 bg-dark-1 text-white">
+              <DropdownMenuContent
+                side="top"
+                className="border-dark-1 bg-dark-1 text-white"
+              >
                 {['Grid', 'Speaker-Left', 'Speaker-Right'].map(
                   (item, index) => (
                     <div key={index}>
@@ -215,11 +218,7 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {/* Call Stats Button */}
             <CallStatsButton />
-
-            {/* Participants Toggle */}
             <button
               onClick={() => {
                 setShowParticipants((prev) => !prev);
@@ -229,19 +228,19 @@ const MeetingRoom = ({ showEveryone }: MeetingRoomProps) => {
             >
               <Users size={20} className="text-white" />
             </button>
-
-            {/* Messages Toggle */}
             <button
               onClick={() => {
-                setshowSessionMessages((prev) => !prev);
+                const isOpening = !showSessionMessages;
+                setshowSessionMessages(isOpening);
                 setShowParticipants(false);
+                if (isOpening) {
+                  setNewMessage(false); // Reset new message indicator when opening the chat
+                }
               }}
-              className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]"
+              className={`cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b] ${newMessage && !showSessionMessages ? 'bg-red-500' : ''}`}
             >
               <MessageSquare size={20} className="text-white" />
             </button>
-
-            {/* End Call */}
             {!isPersonalRoom && <EndCall />}
           </div>
         </div>

@@ -7,11 +7,17 @@ import { Input } from './ui/input';
 import { Skeleton } from './ui/skeleton';
 
 interface Message {
+  id: string; // Added `id` for message tracking
   username: string;
   message: string;
 }
 
-const ChatRoom: React.FC = () => {
+interface ChatRoomProps {
+  setStateProp: (newState: boolean) => void;
+  lastMessageId: string;
+}
+
+const ChatRoom: React.FC<ChatRoomProps> = ({ setStateProp, lastMessageId }) => {
   const { isLoaded, user } = useUser();
   const { id } = useParams();
   const sessionId = id;
@@ -32,11 +38,18 @@ const ChatRoom: React.FC = () => {
         { event: 'INSERT', schema: 'public', table: 'SessionMessages' },
         (payload) => {
           if (payload.new.session_id === sessionId) {
-            const { username, message } = payload.new;
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              { username, message },
-            ]);
+            const { id, username, message } = payload.new;
+            setMessages((prevMessages) => {
+              const newMessages = [...prevMessages, { id, username, message }];
+              if (newMessages.length > 0) {
+                const lastMsg = newMessages[newMessages.length - 1];
+                // Check if the incoming message is new
+                if (lastMsg.id !== lastMessageId) {
+                  setStateProp(true); // Set state to true if new message arrives
+                }
+              }
+              return newMessages;
+            });
           }
         },
       )
@@ -64,7 +77,7 @@ const ChatRoom: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [sessionId]);
+  }, [sessionId, lastMessageId, setStateProp]);
 
   useEffect(() => {
     scrollToBottom();
@@ -102,7 +115,7 @@ const ChatRoom: React.FC = () => {
           ) : (
             messages.map((msg, index) => (
               <div
-                key={index}
+                key={msg.id} // Ensure the key is unique
                 className="message rounded-md bg-gray-700 p-3 text-sm"
               >
                 <strong className="text-blue-400">{msg.username}:</strong>{' '}

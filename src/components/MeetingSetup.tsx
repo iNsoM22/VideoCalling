@@ -6,6 +6,7 @@ import {
   useCall,
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
+import { useRouter } from 'next/navigation';  // Import useRouter for redirection
 
 import Notification from './Notify';
 import { Button } from './ui/button';
@@ -23,6 +24,7 @@ const MeetingSetup = ({
   const callHasEnded = !!callEndedAt;
 
   const call = useCall();
+  const router = useRouter();  // Initialize router for navigation
 
   if (!call) {
     throw new Error(
@@ -64,6 +66,13 @@ const MeetingSetup = ({
       videoStream && videoStream.getTracks().forEach((track) => track.stop());
     };
   }, []);
+
+  useEffect(() => {
+    // Redirect to dashboard if the call has ended
+    if (callHasEnded) {
+      router.push('/');  // Redirect to the dashboard
+    }
+  }, [callHasEnded, router]);  // Effect runs whenever `callHasEnded` changes
 
   useEffect(() => {
     if (isMicCamToggled) {

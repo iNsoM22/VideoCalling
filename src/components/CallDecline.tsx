@@ -28,7 +28,7 @@ const EndCall = () => {
 
   const endCall = async () => {
     await call.endCall();
-    router.push('/');
+    router.replace('/');
   };
 
   return (
