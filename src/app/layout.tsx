@@ -25,7 +25,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider
-        onUserDelete='/sign-in'
         appearance={{
           layout: {
             socialButtonsVariant: 'iconButton',
